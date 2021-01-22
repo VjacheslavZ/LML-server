@@ -1,13 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { Translate } = require('@google-cloud/translate').v2;
 import * as config from 'config';
+
+import { TranslationRepository } from './translation.repository';
+import { TranslationEN } from './translation.entity';
 
 const apiConfig = config.get('keys');
 
 @Injectable()
 export class TranslationService {
-  async getTranslation(text: string): Promise<string> {
+  constructor(
+    @InjectRepository(TranslationRepository)
+    private translationRepository: TranslationRepository,
+  ) {}
+
+  private logger = new Logger('TranslationController');
+
+  async getTranslation(text: string): Promise<TranslationEN> {
     const translate = new Translate({
       key: apiConfig.translate_api_key,
     });
@@ -23,13 +34,14 @@ export class TranslationService {
         ? translationsRussian
         : [translationsRussian];
 
-      translationsRussian.forEach((translation, i) => {
-        console.log(`${text[i]} => (${targetRussian}) ${translation}`);
+      this.logger.verbose(`Translate res => ${translationsRussian}`);
+
+      return this.translationRepository.createTranslation({
+        text,
+        translation: translationsRussian,
       });
     } catch (error) {
       console.log('err', error);
     }
-    // Tod return translation
-    return 'TranslationService - getTranslation';
   }
 }
