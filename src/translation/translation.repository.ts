@@ -8,6 +8,20 @@ import { CreateTranslationDto } from './create-translation.dto';
 export class TranslationRepository extends Repository<TranslationEN> {
   private logger = new Logger('TranslationRepository');
 
+  async getTranslation(text: string): Promise<TranslationEN> {
+    const query = this.createQueryBuilder('translation_en');
+    query.where('translation_en.text = :text', { text });
+
+    try {
+      const translations = await query.getOne();
+      this.logger.verbose(`TranslationRepository getOne ${translations}`);
+      return translations;
+    } catch (error) {
+      this.logger.error(`Failing get Translation for "${text}"`, error.stack);
+      throw new InternalServerErrorException();
+    }
+  }
+
   async createTranslation(
     createTranslationDto: CreateTranslationDto,
   ): Promise<TranslationEN> {

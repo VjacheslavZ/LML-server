@@ -23,18 +23,17 @@ export class TranslationService {
       key: apiConfig.translate_api_key,
     });
     const targetRussian = 'ru';
+    const translation = await this.translationRepository.getTranslation(text);
+
+    if (translation) {
+      return translation;
+    }
 
     try {
-      let [translationsRussian] = await translate.translate(
+      const [translationsRussian] = await translate.translate(
         text,
         targetRussian,
       );
-
-      translationsRussian = Array.isArray(translationsRussian)
-        ? translationsRussian
-        : [translationsRussian];
-
-      this.logger.verbose(`Translate res => ${translationsRussian}`);
 
       return this.translationRepository.createTranslation({
         text,
