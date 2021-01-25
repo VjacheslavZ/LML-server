@@ -4,19 +4,19 @@ import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { VocabularyDto } from './vocabulary.dto';
+import { VocabularyService } from './vocabulary.service';
 
 @Controller('vocabulary')
 @UseGuards(AuthGuard())
 export class VocabularyController {
   private logger = new Logger('VocabularyController');
 
+  constructor(private vocabularyService: VocabularyService) {}
+
   @Post('add')
-  addTranslationToDictionary(
-    @Body() { translation_id }: VocabularyDto,
-    @GetUser() user: User,
-  ) {
-    this.logger.verbose(`Controller - addTranslationToVocabulary`);
-    console.log('user', user);
-    console.log('translation_id', translation_id);
+  addToVocabulary(@Body() vocabularyDto: VocabularyDto, @GetUser() user: User) {
+    this.logger.verbose('addTranslationToVocabulary');
+
+    return this.vocabularyService.addToVocabulary(vocabularyDto, user);
   }
 }
