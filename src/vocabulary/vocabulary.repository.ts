@@ -23,21 +23,39 @@ export class VocabularyRepository extends Repository<Vocabulary> {
     { translation_id }: VocabularyDto,
     user: User,
   ): Promise<Vocabulary> {
-    const translation = await TranslationEN.findOne(translation_id);
-
-    const userVocabulary = new Vocabulary();
-    userVocabulary.user = user;
-    userVocabulary.isDone = false;
-    userVocabulary.translation_en = translation;
-
     try {
+      const translation = await TranslationEN.findOne(translation_id);
+
+      const userVocabulary = new Vocabulary();
+      userVocabulary.user = user;
+      userVocabulary.isDone = false;
+      userVocabulary.translation_en = translation;
+
       await userVocabulary.save();
+      delete userVocabulary.user;
+
+      return userVocabulary;
     } catch (error) {
       this.logger.error('Failed addToVocabulary', error.stak);
       throw new InternalServerErrorException();
     }
-    delete userVocabulary.user;
+  }
 
-    return userVocabulary;
+  async getVocabulary(user: User): Promise<Vocabulary[]> {
+    const query = this.createQueryBuilder('vocabulary').leftJoinAndSelect(
+      'vocabulary.translation_en',
+      'translation_en',
+    );
+    query.where('vocabulary.userId = :userId', { userId: user.id });
+
+    try {
+      return await query.getMany();
+    } catch (error) {
+      this.logger.error(
+        `Failed get vocabulary for user ${user.username}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException();
+    }
   }
 }

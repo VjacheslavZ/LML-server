@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "5b2cedae-7770-40b5-8a2f-bb5d36166db8",
+		"_postman_id": "d500f369-6c45-4d62-9656-9f0ea9ade683",
 		"name": "LML",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -22,7 +22,13 @@
 				"header": [],
 				"body": {
 					"mode": "urlencoded",
-					"urlencoded": []
+					"urlencoded": [
+						{
+							"key": "text",
+							"value": "test",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
 					"raw": "http://localhost:3000/translation",
@@ -107,7 +113,106 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "add word in vocabulary",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken_user1}} ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "translation_id",
+							"value": "7",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3000/vocabulary/add",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"vocabulary",
+						"add"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "http://localhost:3000/vocabulary",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}} ",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/vocabulary",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"vocabulary"
+					]
+				},
+				"description": "get user vocabulary"
+			},
+			"response": []
 		}
 	],
-	"protocolProfileBehavior": {}
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken_user1",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZqYWNoZXNhbGF2WiIsImlhdCI6MTYxMjI1MDU4OCwiZXhwIjoxNjEyNDY2NTg4fQ._oxzT0dFQh3IQCBom1D1UFBE5NyFiUZWd6BzxILgUBU"
+		},
+		{
+			"key": "accessToken_user2",
+			"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlZqYWNoZXNhbGF2WjIiLCJpYXQiOjE2MTIxMjAxNjUsImV4cCI6MTYxMjMzNjE2NX0.9gXJI0m_u8ye13S_Mbn8Q-M3LHSQzrnYauWvKBw547k"
+		}
+	]
 }

@@ -15,6 +15,12 @@ export class VocabularyService {
     vocabularyDto: VocabularyDto,
     user: User,
   ): Promise<Vocabulary> {
+    this.logger.log('addToVocabulary');
     return await this.vocabularyRepository.addToVocabulary(vocabularyDto, user);
+  }
+
+  async getVocabulary(user: User): Promise<Vocabulary[]> {
+    this.logger.log('getVocabulary');
+    return await this.vocabularyRepository.getVocabulary(user);
   }
 }
