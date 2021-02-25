@@ -3,9 +3,12 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
+  OneToMany,
 } from 'typeorm';
-
+import { Vocabulary } from '../vocabulary/vocabulary.entity';
+/*
+  Collection of translations google translation API
+*/
 @Entity()
 export class TranslationEN extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -16,4 +19,7 @@ export class TranslationEN extends BaseEntity {
 
   @Column()
   translation: string;
+
+  @OneToMany(() => Vocabulary, (vocabulary) => vocabulary.translation_en)
+  vocabulary: Vocabulary[];
 }

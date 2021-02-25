@@ -1,23 +1,27 @@
 import {
-  Entity,
   PrimaryGeneratedColumn,
   Column,
   BaseEntity,
-  OneToOne,
+  Entity,
+  ManyToOne,
 } from 'typeorm';
-import { User } from '../auth/user.entity';
 
+import { TranslationEN } from '../translation/translation.entity';
+
+/*
+  Added word to learning
+*/
 @Entity()
 export class Vocabulary extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @OneToOne(() => User, (user) => user.vocabulary)
-  user: User;
-
   @Column()
   user_id: number;
 
-  @Column('simple-array')
-  translation_id: number[];
+  @ManyToOne(() => TranslationEN, (translationEN) => translationEN.vocabulary)
+  translation_en: TranslationEN;
+
+  @Column()
+  isDone: boolean;
 }

@@ -23,12 +23,6 @@ export class UserRepository extends Repository<User> {
       user.salt = await bcrypt.genSalt();
       user.password = await this.hashPasword(password, user.salt);
       await user.save();
-
-      const vocabulary = await new Vocabulary();
-      vocabulary.user = user;
-      vocabulary.user_id = user.id;
-      vocabulary.translation_id = [];
-      await vocabulary.save();
     } catch (error) {
       if (error.code === '23505') {
         throw new ConflictException('User name already exists');

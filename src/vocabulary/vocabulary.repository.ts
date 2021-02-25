@@ -1,23 +1,34 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { InternalServerErrorException, Logger } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 
 import { Vocabulary } from './vocabulary.entity';
 import { User } from '../auth/user.entity';
 import { VocabularyDto } from './vocabulary.dto';
+import { TranslationEN } from '../translation/translation.entity';
+import { TranslationRepository } from '../translation/translation.repository';
 
 @EntityRepository(Vocabulary)
 export class VocabularyRepository extends Repository<Vocabulary> {
   private logger = new Logger('VocabularyRepository');
 
+  constructor(
+    @InjectRepository(TranslationRepository)
+    private translationRepository: TranslationRepository,
+  ) {
+    super();
+  }
+
   async addToVocabulary(
     { translation_id }: VocabularyDto,
     user: User,
   ): Promise<Vocabulary> {
-    const query = this.createQueryBuilder('vocabulary');
-    query.where('vocabulary.userId = :userId', { userId: user.id });
+    const translation = await TranslationEN.findOne(translation_id);
 
-    const userVocabulary = await query.getOne();
-    userVocabulary.translation_id.push(translation_id);
+    const userVocabulary = new Vocabulary();
+    userVocabulary.user_id = user.id;
+    userVocabulary.isDone = false;
+    userVocabulary.translation_en = translation;
 
     try {
       await userVocabulary.save();
