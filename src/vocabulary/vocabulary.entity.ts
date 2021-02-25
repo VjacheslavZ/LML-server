@@ -7,6 +7,7 @@ import {
 } from 'typeorm';
 
 import { TranslationEN } from '../translation/translation.entity';
+import { User } from '../auth/user.entity';
 
 /*
   Added word to learning
@@ -16,8 +17,8 @@ export class Vocabulary extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  user_id: number;
+  @ManyToOne(() => User, (user) => user.vocabulary)
+  user: User;
 
   @ManyToOne(() => TranslationEN, (translationEN) => translationEN.vocabulary)
   translation_en: TranslationEN;

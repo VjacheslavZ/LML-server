@@ -26,7 +26,7 @@ export class VocabularyRepository extends Repository<Vocabulary> {
     const translation = await TranslationEN.findOne(translation_id);
 
     const userVocabulary = new Vocabulary();
-    userVocabulary.user_id = user.id;
+    userVocabulary.user = user;
     userVocabulary.isDone = false;
     userVocabulary.translation_en = translation;
 
@@ -36,6 +36,8 @@ export class VocabularyRepository extends Repository<Vocabulary> {
       this.logger.error('Failed addToVocabulary', error.stak);
       throw new InternalServerErrorException();
     }
+    delete userVocabulary.user;
+
     return userVocabulary;
   }
 }
