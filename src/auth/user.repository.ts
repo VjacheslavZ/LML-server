@@ -15,7 +15,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 export class UserRepository extends Repository<User> {
   private logger = new Logger('UserRepository');
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
+  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<{status: string}> {
     const { username, password } = authCredentialsDto;
     try {
       const user = new User();
@@ -31,6 +31,8 @@ export class UserRepository extends Repository<User> {
         throw new InternalServerErrorException();
       }
     }
+
+    return { status: 'registered' };
   }
 
   async validateUserPassword(

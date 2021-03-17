@@ -7,6 +7,7 @@ import { User } from '../auth/user.entity';
 import { VocabularyDto } from './vocabulary.dto';
 import { TranslationEN } from '../translation/translation.entity';
 import { TranslationRepository } from '../translation/translation.repository';
+import { VocabularyStatus } from './vocabulary-status.enum';
 
 @EntityRepository(Vocabulary)
 export class VocabularyRepository extends Repository<Vocabulary> {
@@ -28,7 +29,7 @@ export class VocabularyRepository extends Repository<Vocabulary> {
 
       const userVocabulary = new Vocabulary();
       userVocabulary.user = user;
-      userVocabulary.isDone = false;
+      userVocabulary.status = VocabularyStatus.WAITING;
       userVocabulary.translation_en = translation;
 
       await userVocabulary.save();

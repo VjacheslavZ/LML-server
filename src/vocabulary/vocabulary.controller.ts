@@ -1,10 +1,23 @@
-import { Controller, Logger, UseGuards, Post, Body, Get } from '@nestjs/common';
+import {
+  Controller,
+  Logger,
+  UseGuards,
+  Post,
+  Body,
+  Get,
+  Patch,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
 import { GetUser } from '../auth/get-user.decorator';
 import { User } from '../auth/user.entity';
 import { VocabularyDto } from './vocabulary.dto';
 import { VocabularyService } from './vocabulary.service';
+import { VocabularyStatusValidationPipe } from './pipes/vocabulary-status-validation.pipe';
+import { VocabularyStatus } from './vocabulary-status.enum';
+import { Vocabulary } from './vocabulary.entity';
 
 @Controller('vocabulary')
 @UseGuards(AuthGuard())
@@ -14,14 +27,27 @@ export class VocabularyController {
   constructor(private vocabularyService: VocabularyService) {}
 
   @Post('add')
-  addToVocabulary(@Body() vocabularyDto: VocabularyDto, @GetUser() user: User) {
+  addToVocabulary(
+    @Body() vocabularyDto: VocabularyDto,
+    @GetUser() user: User,
+  ): Promise<Vocabulary> {
     this.logger.verbose('addTranslationToVocabulary');
     return this.vocabularyService.addToVocabulary(vocabularyDto, user);
   }
 
   @Get()
-  getVocabulary(@GetUser() user: User) {
+  getVocabulary(@GetUser() user: User): Promise<Vocabulary[]> {
     this.logger.verbose('getVocabulary');
     return this.vocabularyService.getVocabulary(user);
+  }
+
+  @Patch('/:id/status')
+  changeStatusDone(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status', VocabularyStatusValidationPipe) status: VocabularyStatus,
+    @GetUser() user: User,
+  ): Promise<Vocabulary> {
+    this.logger.verbose(`changeStatusDone ${id}`);
+    return this.vocabularyService.updateVocabularyStatus(id, status, user);
   }
 }

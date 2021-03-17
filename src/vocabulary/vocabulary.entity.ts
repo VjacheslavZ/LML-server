@@ -8,10 +8,10 @@ import {
 
 import { TranslationEN } from '../translation/translation.entity';
 import { User } from '../auth/user.entity';
-
+import { VocabularyStatus } from './vocabulary-status.enum';
 /*
-  Added word to learning
-*/
+ * Added word to learning
+ */
 @Entity()
 export class Vocabulary extends BaseEntity {
   @PrimaryGeneratedColumn()
@@ -24,5 +24,5 @@ export class Vocabulary extends BaseEntity {
   translation_en: TranslationEN;
 
   @Column()
-  isDone: boolean;
+  status: VocabularyStatus;
 }

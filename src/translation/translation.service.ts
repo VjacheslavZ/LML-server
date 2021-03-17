@@ -34,7 +34,7 @@ export class TranslationService {
         text,
         targetRussian,
       );
-
+      this.logger.log('translationsRussian', translationsRussian);
       return this.translationRepository.createTranslation({
         text,
         translation: translationsRussian,
