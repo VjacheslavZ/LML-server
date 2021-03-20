@@ -8,6 +8,7 @@ import {
   Patch,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -18,6 +19,11 @@ import { VocabularyService } from './vocabulary.service';
 import { VocabularyStatusValidationPipe } from './pipes/vocabulary-status-validation.pipe';
 import { VocabularyStatus } from './vocabulary-status.enum';
 import { Vocabulary } from './vocabulary.entity';
+
+export interface IDelete {
+  id: number;
+  status: string;
+}
 
 @Controller('vocabulary')
 @UseGuards(AuthGuard())
@@ -49,5 +55,13 @@ export class VocabularyController {
   ): Promise<Vocabulary> {
     this.logger.verbose(`changeStatusDone ${id}`);
     return this.vocabularyService.updateVocabularyStatus(id, status, user);
+  }
+
+  @Delete('/:id')
+  deleteVocabulary(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<IDelete> {
+    return this.vocabularyService.deleteVocabulary(id, user);
   }
 }

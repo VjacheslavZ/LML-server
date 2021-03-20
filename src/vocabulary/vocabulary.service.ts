@@ -6,6 +6,8 @@ import { VocabularyStatus } from './vocabulary-status.enum';
 import { User } from '../auth/user.entity';
 import { VocabularyRepository } from './vocabulary.repository';
 
+import { IDelete } from './vocabulary.controller';
+
 @Injectable()
 export class VocabularyService {
   private logger = new Logger('VocabularyService');
@@ -48,5 +50,16 @@ export class VocabularyService {
     vocabulary.status = statusDto;
 
     return await vocabulary.save();
+  }
+
+  async deleteVocabulary(id: number, user: User): Promise<IDelete> {
+    const result = await this.vocabularyRepository.delete({ id, user });
+    if (!result.affected) {
+      throw new NotFoundException(`Task with id "${id}" not found`);
+    }
+    return {
+      id,
+      status: 'deleted',
+    };
   }
 }
