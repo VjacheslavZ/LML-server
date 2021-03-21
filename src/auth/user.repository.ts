@@ -7,15 +7,15 @@ import {
 import * as bcrypt from 'bcrypt';
 
 import { User } from './user.entity';
-import { Vocabulary } from '../vocabulary/vocabulary.entity';
-
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 
 @EntityRepository(User)
 export class UserRepository extends Repository<User> {
   private logger = new Logger('UserRepository');
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<{status: string}> {
+  async signUp(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<{ status: string }> {
     const { username, password } = authCredentialsDto;
     try {
       const user = new User();
