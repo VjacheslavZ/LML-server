@@ -16,7 +16,9 @@ export class User extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    default: 'Student',
+  })
   username: string;
 
   @Column()
@@ -24,6 +26,17 @@ export class User extends BaseEntity {
 
   @Column()
   salt: string;
+
+  @Column({
+    default: null,
+    unique: true,
+  })
+  email: string;
+
+  @Column({
+    default: null,
+  })
+  photo: string;
 
   @OneToMany(() => Vocabulary, (vocabulary) => vocabulary.user)
   vocabulary: Vocabulary[];

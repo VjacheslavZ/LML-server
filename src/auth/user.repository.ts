@@ -16,16 +16,16 @@ export class UserRepository extends Repository<User> {
   async signUp(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<{ status: string }> {
-    const { username, password } = authCredentialsDto;
+    const { password, email } = authCredentialsDto;
     try {
       const user = new User();
-      user.username = username;
+      user.email = email;
       user.salt = await bcrypt.genSalt();
       user.password = await this.hashPasword(password, user.salt);
       await user.save();
     } catch (error) {
       if (error.code === '23505') {
-        throw new ConflictException('User name already exists');
+        throw new ConflictException('User with this email already exists');
       } else {
         this.logger.verbose(`Error save user ${error}`);
         throw new InternalServerErrorException();
@@ -38,8 +38,8 @@ export class UserRepository extends Repository<User> {
   async validateUserPassword(
     authCredentialsDto: AuthCredentialsDto,
   ): Promise<string> {
-    const { username, password } = authCredentialsDto;
-    const user = await this.findOne({ username });
+    const { email, password } = authCredentialsDto;
+    const user = await this.findOne({ email });
     if (user && (await user.validatePassword(password))) {
       return user.username;
     } else {
